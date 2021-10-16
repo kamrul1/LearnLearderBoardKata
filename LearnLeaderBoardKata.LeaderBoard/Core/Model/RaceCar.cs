@@ -7,25 +7,14 @@ using System.Threading.Tasks;
 
 namespace LearnLeaderBoardKata.LeaderBoard.Core.Model
 {
-    public class Player: IScoreSortableItem<Player>
+    public class RaceCar : IScoreSortableItem<RaceCar>
     {
-        public string Name { get; set; }
-        public int Score { get; set; }
-
-        //public int CompareTo(Player other)
-        //{
-        //    if (this.Score == other.Score)
-        //    {
-        //        //sort alaphabetic order
-        //        return this.Name.CompareTo(other.Name);
-        //    }
-
-        //    return this.Score > other.Score ? -1 : 1;
-        //}
+        public string Name { get; set;}
+        public int Score { get; set;}
 
         public int CompareTo(object other)
         {
-            Player otherPlayer = other as Player;
+            RaceCar otherPlayer = other as RaceCar;
 
             if (this.Score == otherPlayer.Score)
             {
@@ -34,7 +23,6 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Model
             }
 
             return this.Score > otherPlayer.Score ? -1 : 1;
-
         }
     }
 }

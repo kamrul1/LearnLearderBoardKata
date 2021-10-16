@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
 {
-    public class TennisBoardCalculator<T> : BoardCalculator<T> where T:class
+    public class RacingBoardCalculator<T> : BoardCalculator<T> where T : RaceCar
     {
-        public TennisBoardCalculator(List<IScoreSortableItem<T>> players, GameRankOrder gameRankOrder) : base(players, gameRankOrder)
+        public RacingBoardCalculator(List<IScoreSortableItem<T>> scoreableItem, GameRankOrder gameRankOrder) : base(scoreableItem, gameRankOrder)
         {
         }
     }

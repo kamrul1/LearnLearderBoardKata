@@ -1,4 +1,5 @@
 ﻿
+using LearnLeaderBoardKata.LeaderBoard.Core.Interfaces;
 using LearnLeaderBoardKata.LeaderBoard.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -11,28 +12,28 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
     /// <summary>
     /// Base class that accepts a player list with IComparable implemented for sorting
     /// </summary>
-    public abstract class BoardCalculator : IBoardCalculator
+    public abstract class BoardCalculator<T> : IBoardCalculator<T> where T : class
     {
         protected const int RANK_MIN = 1;
-        protected readonly List<Player> players;
+        protected readonly List<IScoreSortableItem<T>> scoreableItem;
         protected readonly GameRankOrder gameRankOrder;
-        protected List<PlayerRank> playerRanks;
+        protected List<ScoreableItemRank> scoreableItemsRank;
 
-        public BoardCalculator(List<Player> players, GameRankOrder gameRankOrder)
+        public BoardCalculator(List<IScoreSortableItem<T>> scoreableItem, GameRankOrder gameRankOrder)
         {
-            this.players = players;
+            this.scoreableItem = scoreableItem;
             this.gameRankOrder = gameRankOrder;
         }
 
-        public virtual IEnumerable<PlayerRank> GetRanking()
+        public virtual IEnumerable<ScoreableItemRank> GetRanking()
         {
 
-            players.Sort();
+            scoreableItem.Sort();
 
             int rankPosition = RANK_MIN;
             int previousScore = GetInitialPreviousScore();
 
-            playerRanks = new();
+            scoreableItemsRank = new();
 
 
             if (gameRankOrder == GameRankOrder.Assending)
@@ -45,15 +46,15 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
                 CreateRankByDescendingScore(ref rankPosition, ref previousScore);
             }
 
-            return playerRanks;
+            return scoreableItemsRank;
 
         }
 
         public virtual void CreateRankByAssendingScore(ref int rankPosition, ref int previousScore)
         {
-            for (int i = 0; i < players.Count; i++)
+            for (int i = 0; i < scoreableItem.Count; i++)
             {
-                if (players[i].Score == previousScore)
+                if (scoreableItem[i].Score == previousScore)
                 {
                     AddScoreValueToPlayerRank(rankPosition, previousScore, i);
                     continue;
@@ -65,9 +66,9 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
 
         public virtual void CreateRankByDescendingScore(ref int rankPosition, ref int previousScore)
         {
-            for (int i = players.Count - 1; i >= 0; i--)
+            for (int i = scoreableItem.Count - 1; i >= 0; i--)
             {
-                if (players[i].Score == previousScore)
+                if (scoreableItem[i].Score == previousScore)
                 {
                     AddScoreValueToPlayerRank(rankPosition, previousScore, i);
                     continue;
@@ -80,20 +81,20 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
 
         public virtual void AddScoreValueToPlayerRank(int rankPosition, int previousScore, int i)
         {
-            playerRanks.Add
+            scoreableItemsRank.Add
                 (
-                    new PlayerRank { PlayerName = players[i].Name, Score = previousScore, Rank = rankPosition }
+                    new ScoreableItemRank { Name = scoreableItem[i].Name, Score = previousScore, Rank = rankPosition }
                 );
         }
 
         public virtual void AddNextScoreValueToNextPlayerRank(out int rankPosition, out int previousScore, int i)
         {
-            previousScore = players[i].Score;
-            rankPosition = i + 1;
+            previousScore = scoreableItem[i].Score;
+            rankPosition = i+1;
 
-            playerRanks.Add
+            scoreableItemsRank.Add
                 (
-                    new PlayerRank { PlayerName = players[i].Name, Rank = rankPosition, Score = players[i].Score }
+                    new ScoreableItemRank { Name = scoreableItem[i].Name, Rank = rankPosition, Score = scoreableItem[i].Score }
                 );
         }
 
@@ -101,10 +102,10 @@ namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
         {
             if (gameRankOrder == GameRankOrder.Assending)
             {
-                return players.FirstOrDefault().Score;
+                return scoreableItem.FirstOrDefault().Score;
             }
 
-            return players.FirstOrDefault(x => x.Score == players.Min(y => y.Score)).Score;
+            return scoreableItem.FirstOrDefault(x => x.Score == scoreableItem.Min(y => y.Score)).Score;
         }
     }
 }

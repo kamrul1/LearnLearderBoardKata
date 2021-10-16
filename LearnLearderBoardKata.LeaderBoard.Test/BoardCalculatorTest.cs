@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using System.Linq;
+using LearnLeaderBoardKata.LeaderBoard.Core.Interfaces;
 
 namespace LearnLearderBoardKata.LeaderBoard.Test
 {
@@ -13,7 +14,7 @@ namespace LearnLearderBoardKata.LeaderBoard.Test
         public void ShouldReturnPlayerNameInOrderOfRank()
         {
             //Arrange
-            var playerList = new List<Player>
+            var playerList = new List<IScoreSortableItem<Player>>
             {
                 new Player{Name="Chrissy", Score=8},
                 new Player{Name="Ardalis", Score=10},
@@ -21,23 +22,23 @@ namespace LearnLearderBoardKata.LeaderBoard.Test
                 new Player{Name="Bob", Score=8}
             };
 
-            var sut = new TennisBoardCalculator(playerList, GameRankOrder.Assending);
+            var sut = new TennisBoardCalculator<Player>(playerList, GameRankOrder.Assending);
 
             //Act
             var result = sut.GetRanking();
 
             //Assert
-            Assert.Equal("Ardalis", result.ElementAt(0).PlayerName);
-            Assert.Equal("Bob", result.ElementAt(1).PlayerName);
-            Assert.Equal("Chrissy", result.ElementAt(2).PlayerName);
-            Assert.Equal("Doris", result.ElementAt(3).PlayerName);
+            Assert.Equal("Ardalis", result.ElementAt(0).Name);
+            Assert.Equal("Bob", result.ElementAt(1).Name);
+            Assert.Equal("Chrissy", result.ElementAt(2).Name);
+            Assert.Equal("Doris", result.ElementAt(3).Name);
         }
 
         [Fact]
         public void ShouldReturnPlayerRankedByScore()
         {
             //Arrange
-            var playerList = new List<Player>
+            var playerList = new List<IScoreSortableItem<Player>>
             {
                 new Player{Name="Chrissy", Score=8},
                 new Player{Name="Ardalis", Score=10},
@@ -45,7 +46,7 @@ namespace LearnLearderBoardKata.LeaderBoard.Test
                 new Player{Name="Bob", Score=8}
             };
 
-            var sut = new TennisBoardCalculator(playerList, GameRankOrder.Assending);
+            var sut = new TennisBoardCalculator<Player>(playerList, GameRankOrder.Assending);
 
             //Act
             var result = sut.GetRanking();

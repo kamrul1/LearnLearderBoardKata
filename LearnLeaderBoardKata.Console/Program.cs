@@ -1,4 +1,5 @@
 ﻿using LearnLeaderBoardKata.LeaderBoard.Core.Boards;
+using LearnLeaderBoardKata.LeaderBoard.Core.Interfaces;
 using LearnLeaderBoardKata.LeaderBoard.Core.Model;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace LearnLeaderBoardKata.Console
     {
         static void Main(string[] args)
         {
-            var playerList = new List<Player>
+            var playerList = new List<IScoreSortableItem<Player>>
             {
                 new Player{Name="Chrissy", Score=8},
                 new Player{Name="Ardalis", Score=10},
@@ -18,14 +19,14 @@ namespace LearnLeaderBoardKata.Console
                 new Player{Name="Bob", Score=8}
             };
 
-            var sut = new TennisBoardCalculator(playerList, GameRankOrder.Assending);
+            var sut = new TennisBoardCalculator<Player>(playerList, GameRankOrder.Assending);
             var rankedList = sut.GetRanking();
 
             System.Console.WriteLine($"Rank\tName\t\tScore");
 
             foreach (var playerRank in rankedList)
             {
-                System.Console.WriteLine($"{playerRank.Rank}\t{playerRank.PlayerName}\t\t{playerRank.Score}");
+                System.Console.WriteLine($"{playerRank.Rank}\t{playerRank.Name}\t\t{playerRank.Score}");
             }
         }
     }

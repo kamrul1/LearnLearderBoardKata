@@ -1,5 +1,6 @@
 ﻿using LearnLeaderBoardKata.LeaderBoard.Core.Interfaces;
 using LearnLeaderBoardKata.LeaderBoard.Core.Model;
+using LearnLeaderBoardKata.LeaderBoard.Infrastructure.AdapterPattern;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LearnLeaderBoardKata.LeaderBoard.Core.Boards
 {
-    public class TennisBoardCalculator<T> : BoardCalculator<T> where T:class
+    public class AdapterPatternBoardCalculator<T> : BoardCalculator<T> where T : class
     {
-        public TennisBoardCalculator(List<IScoreSortableItem<T>> players, GameRankOrder gameRankOrder) : base(players, gameRankOrder)
+        public AdapterPatternBoardCalculator(List<IScoreSortableItem<T>> scoreableItem, GameRankOrder gameRankOrder) : base(scoreableItem, gameRankOrder)
         {
         }
     }
