@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LearnLeaderBoardKata.LeaderBoard.Core.Model
 {
-    public class PlayerRank
+    public class ScoreableItemRank
     {
-        public string PlayerName { get; set; }
+        public string Name { get; set; }
         public int Rank { get; set; }
         public int Score { get; set; }
     }

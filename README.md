@@ -136,7 +136,41 @@ Instead of players and games what if you're calculating book sales rankings?***
 
 The key would be mapping, the only fields it requires are name and score.  Potentially Id 
 field could be used so that each item is given an unique value.
-I could refactor Player class to ScoredItem class with sorting and it would be more abstract.
+
+I have re-factored the Player class to implement a generic interface and named it 
+ISortableItem.cs:
+
+```
+public interface IScoreSortableItem<T>:IComparable
+{
+    string Name { get; set; }
+    int Score { get; set; }
+
+}
+```
+A couple of gotacha to note here is that IComparable can't be generic (i.e. ICompareable\<T>)
+else an InvalidOperationException get thrown.  Here is the implementation by RaceCar class
+
+```
+public class RaceCar : IScoreSortableItem<RaceCar>
+{
+    public string Name { get; set;}
+    public int Score { get; set;}
+
+    public int CompareTo(object other)
+    {
+        RaceCar otherPlayer = other as RaceCar;
+
+        if (this.Score == otherPlayer.Score)
+        {
+            //sort alaphabetic order
+            return this.Name.CompareTo(otherPlayer.Name);
+        }
+
+        return this.Score > otherPlayer.Score ? -1 : 1;
+    }
+}
+```
 
 ***Can you design your solution such that its operations are configurable, 
 or leverage a design pattern like Adapter to provide a way for it to work 
@@ -152,3 +186,9 @@ Adaptor pattern looks like a good fit as Player class could potentially have it'
 interface implement through via the class where Player is being adopted.
 
 
+
+
+----
+See alternative solution presented by a [youtuber](https://www.youtube.com/watch?v=BGtF_QZ-tBw)
+
+Next Kata, to try exercise and compare with solution:https://github.com/shealey/CodeKatas
