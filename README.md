@@ -182,11 +182,73 @@ of a different abstract/interface type. When the adapter receives a call to
 any of its methods, it translates parameters to the appropriate format and 
 then directs the call to one or several methods of the wrapped object.
 ````
-Adaptor pattern looks like a good fit as Player class could potentially have it's 
+[Adaptor pattern](https://refactoring.guru/design-patterns/adapter/csharp/example) looks like a good fit as Player class could potentially have it's 
 interface implement through via the class where Player is being adopted.
 
+Example of adaptee:
+```
+public class Adaptee
+{
+    public int PowerScore { get; set; }
+    public string SuperHeroName { get; set; }
+}
+```
+Example of the adapter, which implements the interface and so does not touch Adaptee:
+```
+public class Adapter : IScoreSortableItem<Adapter>
+{
+    private readonly Adaptee adaptee;
 
+    public Adapter(Adaptee adaptee)
+    {
+        this.adaptee = adaptee;
+    }
+    public string Name { get => adaptee.SuperHeroName; set => adaptee.SuperHeroName=value; }
+    public int Score { get => adaptee.PowerScore; set => adaptee.PowerScore=value; }
 
+    public int CompareTo(object obj)
+    {
+        Adapter other = obj as Adapter;
+
+        if (this.Score == other.Score)
+        {
+            //sort alaphabetic order
+            return this.Name.CompareTo(other.Name);
+        }
+
+        return this.Score > other.Score ? -1 : 1;
+    }
+}
+```
+
+Unit Testing straight forward, the Adapter class needs to be given in instance of adaptee:
+```
+public class AdapterPatternBoardCalculatorTest
+{
+    [Fact]
+    public void ShouldRankSuperHeroByPowerScore()
+    {
+        //Arrange
+        var superHeroAdapters = new List<IScoreSortableItem<Adapter>>
+        {
+            new Adapter(new Adaptee{SuperHeroName="Hulk", PowerScore=1000}),
+            new Adapter(new Adaptee{SuperHeroName="Banana man", PowerScore=3000}),
+            new Adapter(new Adaptee{SuperHeroName="Swiftman", PowerScore=1})
+        };
+
+        //Act
+        var sut = new AdapterPatternBoardCalculator<Adapter>(superHeroAdapters, GameRankOrder.Assending);
+        var results = sut.GetRanking();
+
+        //Assert
+        Assert.Equal("Swiftman", results.LastOrDefault().Name);
+    }
+}
+```
+
+The only thing which I could not get my head arround was where in the Domain Driven Design pattern
+the adapter and adaptee folder should live.  They don't technical fit the Model folder as this 
+is a design after thought, otherwise why would you adapt it.  This is a trival matter in this exercise.
 
 ----
 See alternative solution presented by a [youtuber](https://www.youtube.com/watch?v=BGtF_QZ-tBw)
